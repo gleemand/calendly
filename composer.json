@@ -1,0 +1,22 @@
+{
+    "require": {
+        "retailcrm/api-client-php": "~6.0",
+        "php-http/guzzle7-adapter": "^1.0",
+        "monolog/monolog": "^3.4",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "civicrm/composer-compile-plugin": true
+        }
+    },
+    "extra": {
+        "compile-whitelist": ["retailcrm/api-client-php"]
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "test -e config.php || cp config.php.dist config.php"
+        ]
+    }
+}

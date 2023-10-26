@@ -1,0 +1,12 @@
+<?php
+
+const CRM_URL = 'https://demo.simla.com/';
+const CRM_KEY = 'xxx';
+
+const SITE = 'main';
+const TIME_ZONE = 'America/Mexico_City';
+const DATE_CUSTOM_FIELD = 'demo_date';
+const TIME_CUSTOM_FIELD = 'demo_time';
+
+const CALENDLY_TOKEN = 'xxx';
+const WEBHOOK_URL = 'https://demo.app.com/webhook';
