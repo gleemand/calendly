@@ -4,7 +4,7 @@ require __DIR__ . '/functions.php';
 global $logger;
 
 if (file_exists(WEBHOOK_LOCK)) {
-    echo 'Already subscribed';
+    $logger->warning('Already subscribed');
 
     exit;
 }
