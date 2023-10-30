@@ -13,6 +13,7 @@ try {
 
 $url = $request['payload']['tracking']['utm_source'] ?? null;
 $date = $request['payload']['scheduled_event']['start_time'] ?? null;
+$timezone = $request['payload']['timezone'] ?? null;
 
 $logger->debug('Webhook data: ' . json_encode($request));
 
@@ -24,6 +25,12 @@ if (!$url) {
 
 if (!$date) {
     $logger->error('Date is empty');
+
+    exit;
+}
+
+if (!$timezone) {
+    $logger->error('Timezone is empty');
 
     exit;
 }
@@ -41,9 +48,9 @@ $logger->debug('Order found: ' . $order->id);
 
 
 $dateTime = new \DateTime($date);
-$logger->debug('UTC timezone date: ' . $dateTime->format('Y-m-d H:i:s P'));
-$dateTime = $dateTime->setTimezone(new \DateTimeZone(TIME_ZONE));
-$logger->debug('CRM timezone date: ' . $dateTime->format('Y-m-d H:i:s P'));
+$logger->debug('UTC tmzone date: ' . $dateTime->format('Y-m-d H:i:s P'));
+$dateTime = $dateTime->setTimezone(new \DateTimeZone($timezone));
+$logger->debug('Customer`s date: ' . $dateTime->format('Y-m-d H:i:s P'));
 
 $result = updateDateAndTime($order->id, $dateTime);
 
