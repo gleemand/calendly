@@ -109,7 +109,13 @@ function findOrderByCrmUrl(string $url) {
         exit;
     }
 
-    return current($response->orders);
+    foreach ($response->orders as $order) {
+        if ($order->customFields['crm'] === $url) {
+            return $order;
+        }
+    }
+
+    return null;
 }
 
 function updateDateAndTime(int $orderId, \DateTime $date) {
