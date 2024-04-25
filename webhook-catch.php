@@ -11,14 +11,14 @@ try {
     exit;
 }
 
-$url = $request['payload']['tracking']['utm_source'] ?? null;
+$data = getPayloadData($request['payload']);
 $date = $request['payload']['scheduled_event']['start_time'] ?? null;
 $timezone = $request['payload']['timezone'] ?? null;
 
 $logger->debug('Webhook data: ' . json_encode($request));
 
-if (!$url) {
-    $logger->error('Url is empty');
+if (!$data['email']) {
+    $logger->error('Email is empty');
 
     exit;
 }
@@ -35,29 +35,43 @@ if (!$timezone) {
     exit;
 }
 
-$logger->debug('CRM: ' . $url);
-$order = findOrderByCrmUrl('https://' . $url);
+$customer = getCustomerByEmail($data['email']);
 
-if (!$order) {
-    $logger->error('Order not found');
+if (!$customer) {
+    $customer = createNewCustomer($data);
+}
+
+if (!$customer) {
+    $logger->error('Customer is empty');
 
     exit;
 }
 
-$logger->debug('Order found: ' . $order->id);
-
-
 $dateTime = new \DateTime($date);
-$logger->debug('UTC tmzone date: ' . $dateTime->format('Y-m-d H:i:s P'));
+$logger->debug('UTC timezone date: ' . $dateTime->format('Y-m-d H:i:s P'));
 $dateTime = $dateTime->setTimezone(new \DateTimeZone($timezone));
 $logger->debug('Customer`s date: ' . $dateTime->format('Y-m-d H:i:s P'));
 
-$result = updateDateAndTime($order->id, $dateTime);
+$order = createNewOrder($customer, $data, $dateTime);
 
-if (!$result) {
-    $logger->error('Error when updating order: ' . $order->id);
+if (!$order) {
+    $logger->error('Can not create order');
 
     exit;
 }
 
-$logger->info('Successfully updated order: ' . $result->id);
+$logger->info('Successfully created order: ' . $order);
+
+if ($customer) {
+    $logger->debug('UserId: ' . $customer);
+
+    $result = logEvent('Successful demo', $customer);
+
+    if (!$result || !isset($result['code']) || $result['code'] !== 200) {
+        $logger->error('Amplitude API error ', ['result' => $result]);
+
+        exit;
+    }
+
+    $logger->info('Successfully sent event to amplitude: ' . $customer);
+}
