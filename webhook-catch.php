@@ -35,13 +35,13 @@ if (!$timezone) {
     exit;
 }
 
-$customer = getCustomerByEmail($data['email']);
+$customerId = getCustomerByEmail($data['email']);
 
-if (!$customer) {
-    $customer = createNewCustomer($data);
+if (!$customerId) {
+    $customerId = createNewCustomer($data);
 }
 
-if (!$customer) {
+if (!$customerId) {
     $logger->error('Customer is empty');
 
     exit;
@@ -52,7 +52,7 @@ $logger->debug('UTC timezone date: ' . $dateTime->format('Y-m-d H:i:s P'));
 $dateTime = $dateTime->setTimezone(new \DateTimeZone($timezone));
 $logger->debug('Customer`s date: ' . $dateTime->format('Y-m-d H:i:s P'));
 
-$order = createNewOrder($customer, $data, $dateTime);
+$order = createNewOrder($customerId, $data, $dateTime);
 
 if (!$order) {
     $logger->error('Can not create order');
@@ -62,10 +62,10 @@ if (!$order) {
 
 $logger->info('Successfully created order: ' . $order);
 
-if ($customer) {
-    $logger->debug('UserId: ' . $customer);
+if ($customerId) {
+    $logger->debug('UserId: ' . $customerId);
 
-    $result = logEvent('Successful demo', $customer);
+    $result = logEvent('Successful demo', $customerId);
 
     if (!$result || !isset($result['code']) || $result['code'] !== 200) {
         $logger->error('Amplitude API error ', ['result' => $result]);
@@ -73,5 +73,5 @@ if ($customer) {
         exit;
     }
 
-    $logger->info('Successfully sent event to amplitude: ' . $customer);
+    $logger->info('Successfully sent event to amplitude: ' . $customerId);
 }

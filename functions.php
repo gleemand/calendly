@@ -112,25 +112,25 @@ function getPayloadData($payload): array
         $data['name'] = $value;
     }
 
-    $q_and_a = $payload['questions_and_answers'];
+    if ($value = $payload['text_reminder_number']) {
+        $data['phone'] = $value;
+    }
 
-    if ($q_and_a) {
-        if ($value = $q_and_a[0]) {
-            $data['phone'] = $value['answer'];
-        }
+    $qAndA = $payload['questions_and_answers'];
 
-        if ($value = $q_and_a[1]) {
+    if ($qAndA) {
+        if ($value = $qAndA[0]) {
             $data[SCORING_CUSTOM_FIELD] = $value['answer'];
         }
 
-        if ($value = $q_and_a[2]) {
+        if ($value = $qAndA[1]) {
             $data['customerComment'] = $value['answer'];
         }
     }
 
-    $scheduled_event = $payload['scheduled_event'];
+    $scheduledEvent = $payload['scheduled_event'];
 
-    if ($scheduled_event && $value = $scheduled_event['event_memberships'][0]) {
+    if ($scheduledEvent && $value = $scheduledEvent['event_memberships'][0]) {
         $data['meetingHost'] = $value['user_email'];
     }
 
