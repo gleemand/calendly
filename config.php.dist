@@ -3,9 +3,20 @@
 const CRM_URL = 'https://demo.simla.com/';
 const CRM_KEY = 'xxx';
 
+const AMPLITUDE_KEY = '';
+
 const SITE = 'main';
+const ORDER_TYPE = '';
+const ORDER_METHOD = '';
 const DATE_CUSTOM_FIELD = 'demo_date';
 const TIME_CUSTOM_FIELD = 'demo_time';
+const FLAG_CUSTOM_FIELD = 'flag';
+
+const SCORING_CUSTOM_FIELD = 'scoring';
+const SCORING_CUSTOM_FIELD_DICTIONARY = [
+    'One' => '1',
+    'Two' => '2',
+];
 
 const CALENDLY_TOKEN = 'xxx';
 const WEBHOOK_URL = 'https://demo.app.com/webhook';
