@@ -102,39 +102,17 @@ function getCurrentUserData() {
  */
 function getPayloadData($payload): array
 {
-    $data = [];
+    $data = [
+        'email' => $payload['email'] ?? null,
+        'name' => $payload['name'] ?? null,
+        'phone' => $payload['text_reminder_number'] ?? null,
+        SCORING_CUSTOM_FIELD => $payload['questions_and_answers'][0]['answer'] ?? null,
+        'customerComment' => $payload['questions_and_answers'][1]['answer'] ?? null,
+        'meetingHost' => $payload['scheduled_event']['event_memberships'][0]['user_email'] ?? null,
+    ];
 
-    if ($value = $payload['email']) {
-        $data['email'] = $value;
-    }
 
-    if ($value = $payload['name']) {
-        $data['name'] = $value;
-    }
-
-    if ($value = $payload['text_reminder_number']) {
-        $data['phone'] = $value;
-    }
-
-    $qAndA = $payload['questions_and_answers'];
-
-    if ($qAndA) {
-        if ($value = $qAndA[0]) {
-            $data[SCORING_CUSTOM_FIELD] = $value['answer'];
-        }
-
-        if ($value = $qAndA[1]) {
-            $data['customerComment'] = $value['answer'];
-        }
-    }
-
-    $scheduledEvent = $payload['scheduled_event'];
-
-    if ($scheduledEvent && $value = $scheduledEvent['event_memberships'][0]) {
-        $data['meetingHost'] = $value['user_email'];
-    }
-
-    return $data;
+    return array_filter($data);
 }
 
 function getCustomerByEmail(string $email): ?int
